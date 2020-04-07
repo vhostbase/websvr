@@ -17,12 +17,6 @@ console.log("The HTTPS server is up and running ");
 // create the WebSocket server
 wss = new WebSocketServer({server: sslSrv});  
 console.log("WebSocket Secure server is up and running.");
-wss.getUniqueID = function () {
-    function s4() {
-        return Math.floor((1 + Math.random()) * 0x10000).toString(16).substring(1);
-    }
-    return s4() + s4() + '-' + s4();
-};
 /** successful connection */
 wss.on('connection', function (client, incoming_request) {	
 	console.log(incoming_request.url.replace('\?', ''));
