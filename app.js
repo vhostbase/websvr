@@ -13,10 +13,9 @@ var sslSrv = app.listen(port, function () {
    var port = sslSrv.address().port
    console.log("App listening at http://%s:%s", host, port)
 });
-wss = new WebSocketServer({server: sslSrv});  
+/*wss = new WebSocketServer({server: sslSrv});  
 console.log("WebSocket Secure server is up and running.");
 var clientSet = {};
-/** successful connection */
 wss.on('connection', function (client, incoming_request) {
 	console.log(incoming_request.url.replace('\?', ''));
 	const urlParams = new URLSearchParams(incoming_request.url.replace('/?', ''));
@@ -24,20 +23,16 @@ wss.on('connection', function (client, incoming_request) {
 	var oldClientId = clientSet[myParam];	
 	clientSet[myParam]=client;
   console.log("A new WebSocket client was connected.");
-  /** incomming message */
   client.on('message', function (message) {
 	  var msgData = JSON.parse(message);
 	  var yuid = msgData['yuid'];
-    /** broadcast message to all clients */
     wss.broadcast(message, client, yuid);
   });
 });
-// broadcasting the message to all WebSocket clients.
 wss.broadcast = function (data, exclude, yuid) {
   var i = 0, n = this.clients ? this.clients.length : 0, client = null;
   if (n < 1) return;
   console.log("Broadcasting message to all " + n + " WebSocket clients.");
-  //console.log(clientSet);
 	for (let [key, value] of Object.entries(clientSet)) {
 		console.log('key :: '+key);
 		var targetClient = value;
@@ -47,4 +42,4 @@ wss.broadcast = function (data, exclude, yuid) {
 				else console.error('Error: the targetClient state is ' + targetClient.readyState);
 		}
 	}
-};
+};*/
