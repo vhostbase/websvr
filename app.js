@@ -7,21 +7,6 @@ app.use(express.static('public'));
 app.get('/', function (req, res) {
     res.sendFile( __dirname + "/" + "index.html" );
 })
-app.post('/send', function (req, res) {
-	console.log(req);
-	if(req.url == '/send'){
-	let body = [];
-	req.on('data', (chunk) => {
-	  body.push(chunk);
-	}).on('end', () => {
-	  body = Buffer.concat(body).toString();
-	  // at this point, `body` has the entire request body stored in it as a string
-	  sendNotification(body);
-	});
-	}else{
-		res.sendFile( __dirname + "/" + "index.html" );
-	}
-});
 var port = process.env.PORT | 9080
 var sslSrv = app.listen(port, function () {
    var host = sslSrv.address().address
