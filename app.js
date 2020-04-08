@@ -23,21 +23,43 @@ wss.on('connection', function (client, incoming_request) {
   console.log("A new WebSocket client was connected.");
   client.on('message', function (message) {
 	  var msgData = JSON.parse(message);
-	  var yuid = msgData['yuid'];
-    wss.broadcast(message, client, yuid);
+	if(msgData['closeConnection']){
+		var fromYuid = msgData['fromYuid'];
+		var toYuid = msgData['toYuid'];
+		var set = Object.entries(clientSet);
+		for (let [key, value] of set) {
+			if(key === fromYuid || key === toYuid){
+				wss.dispatch(message, value);
+				value.close();
+				value.terminate();				
+				delete clientSet[key];
+			}
+		}	
+	}else{
+		var yuid = msgData['yuid'];
+		wss.broadcast(message, client, yuid);	
+	}
   });
 });
+
 wss.broadcast = function (data, exclude, yuid) {
-  var i = 0, n = this.clients ? this.clients.length : 0, client = null;
+  /*var i = 0, n = this.clients ? this.clients.length : 0, client = null;
   if (n < 1) return;
-  console.log("Broadcasting message to all " + n + " WebSocket clients.");
+  console.log("Broadcasting message to all " + n + " WebSocket clients.");*/
 	for (let [key, value] of Object.entries(clientSet)) {
 		console.log('key :: '+key);
 		var targetClient = value;
-		if(targetClient === exclude) continue;
+		//if(targetClient === exclude) continue;
 		if(yuid === key){			
 			if (targetClient.readyState === targetClient.OPEN) targetClient.send(data);
 				else console.error('Error: the targetClient state is ' + targetClient.readyState);
 		}
 	}
 };
+wss.dispatch = function(data, targetClient){
+	if (targetClient.readyState === targetClient.OPEN) targetClient.send(data);
+	else console.error('Error: the targetClient state is ' + targetClient.readyState);
+};
+wss.on('close', function (client, incoming_request) {
+	console.log('Closed');
+});
