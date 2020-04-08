@@ -1,8 +1,8 @@
 const WebSocketServer = require('ws').Server;
-/*express = require('express'),
+express = require('express'),
   https = require('https'),
   app = express(),
-  fs = require('fs');*/
+  fs = require('fs');
 var clientSet = {};
 /*const pkey = fs.readFileSync('./ssl/key.pem'),
   pcert = fs.readFileSync('./ssl/cert.pem'),
@@ -10,14 +10,14 @@ var clientSet = {};
 var wss = null, sslSrv = null;
 // use express static to deliver resources HTML, CSS, JS, etc)
 // from the public folder 
-/*app.use(express.static('public'));
+app.use(express.static('public'));
 
 app.use(function(req, res, next) {
   if(req.headers['x-forwarded-proto']==='http') {
     return res.redirect(['https://', req.get('Host'), req.url].join(''));
   }
   next();
-});*/
+});
 var port = process.env.PORT | 8080;
 // start server (listen on port 443 - SSL)
 /*sslSrv = https.createServer(options, app).listen(port, function () {
@@ -26,9 +26,13 @@ var port = process.env.PORT | 8080;
    console.log("App listening at http://%s:%s", host, port)
 });
 console.log("The HTTPS server is up and running ");*/
-
+ sslSrv = https.createServer(app).listen(port, function () {
+   var host = sslSrv.address().address
+   var port = sslSrv.address().port
+   console.log("App listening at http://%s:%s", host, port)
+ });
 // create the WebSocket server
-wss = new WebSocketServer({port: port});  
+wss = new WebSocketServer({server: sslSrv});  
 console.log("WebSocket Secure server is up and running.");
 /** successful connection */
 wss.on('connection', function (client, incoming_request) {	
