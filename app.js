@@ -13,3 +13,4 @@ var server = app.listen(process.env.PORT, function () {
 });
 wss = new WebSocketServer({server: server});  
 console.log("WebSocket Secure server is up and running.");
+var clientSet = {};
