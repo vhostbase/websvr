@@ -34,7 +34,15 @@ wss.on('connection', function (client, incoming_request) {
 				value.terminate();				
 				delete clientSet[key];
 			}
-		}	
+		}
+	}else if(msgData['verifyCaller']){
+		var toYuid = msgData['yuid'];
+		var id = clientSet[toYuid];
+		var statusCd = 0;
+		if(id){
+			statusCd = 1;
+		}
+		wss.dispatch("{\"verifyCaller\": true, \"status\": \""+statusCd+"\"}", client);
 	}else{
 		var yuid = msgData['yuid'];
 		wss.broadcast(message, client, yuid);	
