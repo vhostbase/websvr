@@ -35,6 +35,12 @@ wss.on('connection', function (client, incoming_request) {
 				delete clientSet[key];
 			}
 		}
+	}else if(msgData['getMembers']){
+		var members = [];
+		for (let [key, value] of Object.entries(clientSet)) {
+			members.push(key);
+		}
+		wss.dispatch(JSON.stringify(members), client);
 	}else if(msgData['verifyCaller']){
 		var toYuid = msgData['yuid'];
 		var id = clientSet[toYuid];
